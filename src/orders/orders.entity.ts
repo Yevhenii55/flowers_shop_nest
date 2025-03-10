@@ -1,14 +1,14 @@
 import {
   Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    ManyToOne,
-    ManyToMany,
-    JoinTable,
-    CreateDateColumn
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+  CreateDateColumn
 } from 'typeorm';
 import { User } from '../user/user.entity';
-import { Product } from '../products/product.entity';
+import { OrderProduct } from './order-product.entity';
+
 
 @Entity()
 export class Order {
@@ -18,9 +18,8 @@ export class Order {
   @ManyToOne(() => User, user => user.orders, { onDelete: 'CASCADE' })
   user: User;
 
-  @ManyToMany(() => Product)
-  @JoinTable()
-  products: Product[];
+  @OneToMany(() => OrderProduct, orderProduct => orderProduct.order, { cascade: true })
+  orderProducts: OrderProduct[];
 
   @Column({ type: 'enum', enum: ['pending', 'shipped', 'delivered', 'cancelled'], default: 'pending' })
   status: 'pending' | 'shipped' | 'delivered' | 'cancelled';

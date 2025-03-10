@@ -4,10 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToMany,
+  OneToMany
 } from 'typeorm';
-import { Order } from '../orders/orders.entity';
-import { Cart } from '../cart/cart.entity';
+import { CartProduct } from '../cart/cart-product.entity';
+import { OrderProduct } from '../orders/order-product.entity';
 
 @Entity()
 export class Product {
@@ -32,9 +32,9 @@ export class Product {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToMany(() => Cart, cart => cart.products)
-  cartItems: Cart[];
+  @OneToMany(() => CartProduct, cartProduct => cartProduct.product)
+  cartProducts: CartProduct[];
 
-  @ManyToMany(() => Order, order => order.products)
-  orders: Order[];
+  @OneToMany(() => OrderProduct, orderProduct => orderProduct.product)
+  orderProducts: OrderProduct[];
 }

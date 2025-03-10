@@ -2,12 +2,13 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   OneToOne,
-  ManyToMany,
-  JoinTable,
-  CreateDateColumn, JoinColumn,
+  OneToMany,
+  CreateDateColumn,
+  JoinColumn
 } from 'typeorm';
 import { User } from '../user/user.entity';
-import { Product } from '../products/product.entity';
+import { CartProduct } from './cart-product.entity';
+
 
 @Entity()
 export class Cart {
@@ -15,12 +16,11 @@ export class Cart {
   id: number;
 
   @OneToOne(() => User, user => user.cart, { onDelete: 'CASCADE' })
-  @JoinColumn() //  Вказує, що Cart містить зовнішній ключ (userId) у таблиці cart
+  @JoinColumn()
   user: User;
 
-  @ManyToMany(() => Product, { eager: true })
-  @JoinTable()
-  products: Product[];
+  @OneToMany(() => CartProduct, cartProduct => cartProduct.cart, { cascade: true })
+  cartProducts: CartProduct[];
 
   @CreateDateColumn()
   createdAt: Date;

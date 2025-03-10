@@ -12,6 +12,8 @@ import { MailService } from './mail/mail.service';
 import { Cart } from './cart/cart.entity';
 import { Product } from './products/product.entity';
 import { Order } from './orders/orders.entity';
+import { CartProduct } from './cart/cart-product.entity';
+import { OrderProduct } from './orders/order-product.entity';
 
 
 @Module({
@@ -32,7 +34,7 @@ import { Order } from './orders/orders.entity';
         username: configService.get<string>('DATABASE_USER'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [User, Cart, Product, Order],
+        entities: [User, Cart, Product, Order, CartProduct, OrderProduct],
         synchronize: true,
       }),
     }),

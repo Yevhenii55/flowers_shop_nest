@@ -65,5 +65,58 @@ export class MailService {
     }
   }
 
+  async sendOrderConfirmationEmail(
+    to: string,
+    userName: string,
+    products: { product: { name: string }; quantity: number; price: number }[],
+    totalPrice: number,
+    orderid: number,
+  ) {
+    try {
+      const productListHtml = products
+        .map(
+          (p) =>
+            `<li>${p.product.name} - ${p.quantity} шт. × ${p.price} грн = ${(p.quantity * p.price).toFixed(2)} грн</li>`,
+        )
+        .join('');
+
+      await this.transporter.sendMail({
+        from: `"Flower Shop" <${this.configService.get<string>('EMAIL_USER')}>`,
+        to,
+        subject: `🛍 Ваше замовлення прийнято, ${userName}!`,
+        html: `
+        <div style="max-width: 600px; margin: auto; background: #fff0f6; border-radius: 10px; 
+                    padding: 20px; text-align: center; font-family: 'Arial', sans-serif;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+
+          <h1 style="color: #d63384;">🌸 Дякуємо за ваше замовлення, ${userName}! 🌸</h1>
+          <p style="font-size: 16px; color: #555;">Ваше замовлення №${orderid} прийнято і буде оброблене найближчим часом.</p>
+
+          <h3 style="color: #d63384;">📋 Список товарів:</h3>
+          <ul style="text-align: left; font-size: 16px; color: #333;">
+            ${productListHtml}
+          </ul>
+
+          <h2 style="color: #d63384;">💰 Загальна сума: ${totalPrice.toFixed(2)} грн</h2>
+
+          <p style="font-size: 14px; color: #777;">
+            📍 <strong>Адреса:</strong> вул. Квіткова, 15, Черкаси <br>
+            📞 <strong>Телефон:</strong> +380 93 096 3829 <br>
+            📧 <strong>Email:</strong> support@flowershop.com <br>
+            <a href="https://facebook.com/flowershop" style="color: #d63384;">Facebook</a> | 
+            <a href="https://instagram.com/flowershop" style="color: #d63384;">Instagram</a>
+          </p>
+
+          <p style="font-size: 12px; color: #aaa;">Дякуємо, що обрали нас! 💖</p>
+        </div>`,
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Помилка надсилання email:', error.message);
+      } else {
+        console.error('Невідома помилка надсилання email');
+      }
+    }
+  }
 
 }

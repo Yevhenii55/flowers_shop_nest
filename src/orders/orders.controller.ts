@@ -1,26 +1,29 @@
-import { Controller, Post, Get, Body, UsePipes, ValidationPipe } from '@nestjs/common';
-import { OrderService } from './orders.service';
+import {
+  Controller, Post, Param, Get, ParseIntPipe
+} from '@nestjs/common';
+import { OrdersService } from './orders.service';
 
-@Controller('order')
-export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
 
-  /**
-   * 📌 API: Створити новий ордер з кошика користувача
-   * @param email - email користувача, для якого створюється замовлення
-   */
-  @Post('create')
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-  async createOrder(@Body('email') email: string) {
-    return this.orderService.createOrder(email);
+
+@Controller('orders')
+export class OrdersController {
+  constructor(
+    private readonly ordersService: OrdersService) {
   }
 
   /**
-   * 📌 API: Отримати всі замовлення користувача
-   * @param email - email користувача
+   * 📌 API для створення замовлення (перенесення товарів з кошика в ордер)
    */
-  @Get()
-  async getUserOrders(@Body('email') email: string) {
-    return this.orderService.getUserOrders(email);
+  @Post(':email')
+  async createOrder(@Param('email') email: string) {
+    return this.ordersService.createOrder(email);
+  }
+
+  /**
+   * 📌 Отримати замовлення за його ID
+   */
+  @Get(':orderId')
+  async getOrderById(@Param('orderId', ParseIntPipe) orderId: number) {
+    return this.ordersService.getOrderById(orderId);
   }
 }

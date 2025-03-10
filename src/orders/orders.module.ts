@@ -4,13 +4,17 @@ import { Order } from './orders.entity';
 import { User } from '../user/user.entity';
 import { Cart } from '../cart/cart.entity';
 import { Product } from '../products/product.entity';
-import { OrderService } from './orders.service';
-import { OrderController } from './orders.controller';
+import { OrdersController } from './orders.controller';
+import { OrdersService } from './orders.service';
+import { CartProduct } from '../cart/cart-product.entity';
+import { MailService } from '../mail/mail.service';
+import { OrderProduct } from './order-product.entity';
+
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Order, User, Cart, Product])], // 📌 Додаємо необхідні моделі
-  controllers: [OrderController],
-  providers: [OrderService],
+  imports: [TypeOrmModule.forFeature([Order, User, Cart, CartProduct, Product, OrderProduct])], // 📌 Додаємо необхідні моделі
+  controllers: [OrdersController],
+  providers: [OrdersService, MailService],
 })
 export class OrdersModule {}
